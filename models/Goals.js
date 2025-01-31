@@ -63,4 +63,7 @@ goalSchema.virtual("timeProgress").get(function () {
     : 0;
 });
 
-export default mongoose.model("Goal", goalSchema);
+// Check if the model already exists to prevent OverwriteModelError
+const Goal = mongoose.models.Goal || mongoose.model("Goal", goalSchema);
+
+export default Goal;

@@ -29,41 +29,26 @@ const goalSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    daysSpent: {
+      type: Number,
+      default: 0,
+    },
+    totalDays: {
+      type: Number,
+      default: 0,
+    },
+    daysRemaining: {
+      type: Number,
+      default: 0,
+    },
+    timeProgress: {
+      type: Number,
+      default: 0,
+    },
   },
-  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
+  { timestamps: true }
 );
 
-// Virtual fields for time tracking
-goalSchema.virtual("daysSpent").get(function () {
-  const currentDate = new Date();
-  return Math.max(
-    0,
-    Math.floor((currentDate - this.createdAt) / (1000 * 60 * 60 * 24))
-  ); // Convert milliseconds to days
-});
-
-goalSchema.virtual("totalDays").get(function () {
-  return Math.max(
-    0,
-    Math.floor((this.targetDate - this.createdAt) / (1000 * 60 * 60 * 24))
-  );
-});
-
-goalSchema.virtual("daysRemaining").get(function () {
-  const currentDate = new Date();
-  return Math.max(
-    0,
-    Math.floor((this.targetDate - currentDate) / (1000 * 60 * 60 * 24))
-  );
-});
-
-goalSchema.virtual("timeProgress").get(function () {
-  return this.totalDays > 0
-    ? Math.min((this.daysSpent / this.totalDays) * 100, 100)
-    : 0;
-});
-
-// Check if the model already exists to prevent OverwriteModelError
 const Goal = mongoose.models.Goal || mongoose.model("Goal", goalSchema);
 
 export default Goal;
